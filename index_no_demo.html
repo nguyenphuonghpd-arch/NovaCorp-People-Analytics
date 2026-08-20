@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NovaCorp Leadership Decision Simulator</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel:#121a31;
+    --panel2:#18213c;
+    --text:#eef2ff;
+    --muted:#aeb8d4;
+    --accent:#8aa4ff;
+    --accent2:#8ce1c7;
+    --warn:#ffca6a;
+    --bad:#ff8b8b;
+    --line:#2a3557;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:linear-gradient(180deg,#08101f 0%, #0d1427 100%);
+    color:var(--text);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 40px}
+  .hero{
+    display:flex;justify-content:space-between;gap:24px;align-items:flex-start;
+    margin-bottom:18px;
+  }
+  h1{font-size:30px;line-height:1.1;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:760px;line-height:1.5}
+  .pill{
+    display:inline-block;padding:7px 10px;border:1px solid var(--line);
+    border-radius:999px;color:var(--accent2);font-size:12px;background:#0f1830;
+  }
+  .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
+  .card{
+    background:rgba(18,26,49,.96);border:1px solid var(--line);
+    border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.18)
+  }
+  .card h2{font-size:17px;margin:0 0 14px}
+  .section{margin-bottom:16px}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  select,input[type="number"]{
+    width:100%;background:#0f1730;color:var(--text);border:1px solid var(--line);
+    border-radius:11px;padding:10px 11px;font-size:14px;
+  }
+  input[type="range"]{width:100%}
+  .rangeRow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+  .kpi{
+    background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px
+  }
+  .kpi .value{font-size:25px;font-weight:750;margin-top:5px}
+  .kpi .label{font-size:12px;color:var(--muted)}
+  .kpi .tiny{font-size:11px;color:var(--muted);margin-top:4px}
+  .barbox{margin:12px 0}
+  .barlabel{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px}
+  .bar{height:10px;background:#0d1428;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}
+  .recommend{
+    border-left:4px solid var(--accent2);padding:12px 13px;background:#0f1830;border-radius:10px;
+    line-height:1.45;font-size:14px
+  }
+  .assumption{
+    margin-top:12px;color:var(--muted);font-size:11.5px;line-height:1.5
+  }
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{
+    background:var(--accent);color:#07101e;border:0;border-radius:10px;padding:9px 12px;
+    font-weight:700;cursor:pointer
+  }
+  button.secondary{background:#182444;color:var(--text);border:1px solid var(--line)}
+  .wide{grid-column:1/-1}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:600}
+  .good{color:var(--accent2)}
+  .warn{color:var(--warn)}
+  .smallcaps{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  @media (max-width:850px){.grid{grid-template-columns:1fr}.hero{display:block}.hero .pill{margin-top:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="smallcaps">NovaCorp People Analytics Challenge</div>
+      <h1>Leadership Decision Simulator</h1>
+      <div class="sub">
+        Test a focused NovaGuard retention pilot and hiring-governance choices before scaling.
+        Outputs are scenario estimates for decision support — not causal guarantees.
+      </div>
+    </div>
+    <div class="pill">Data Divas · finalist prototype</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. Choose the intervention</h2>
+
+      <div class="section">
+        <label for="cohort">Pilot cohort</label>
+        <select id="cohort">
+          <option value="1.00">Highest-risk HiPo hotspot</option>
+          <option value="0.78">Corporate Operations</option>
+          <option value="0.68">Risk & Compliance</option>
+          <option value="0.72">Level 3 talent cohort</option>
+          <option value="0.55">Broader HiPo population</option>
+        </select>
+      </div>
+
+      <div class="section">
+        <label for="intervention">Primary action</label>
+        <select id="intervention">
+          <option value="1.00">Internal mobility / stretch assignment</option>
+          <option value="0.86">Manager action + recognition</option>
+          <option value="0.72">Targeted development plan</option>
+          <option value="0.62">Hiring-channel governance only</option>
+        </select>
+      </div>
+
+      <div class="section">
+        <label for="reduction">Assumed HiPo replacement-exposure reduction: <b><span id="reductionLabel">10</span>%</b></label>
+        <input type="range" id="reduction" min="0" max="30" step="1" value="10" />
+        <div class="rangeRow"><span>0%</span><span>10%</span><span>20%</span><span>30%</span></div>
+      </div>
+
+      <div class="section">
+        <label for="coverage">Pilot coverage of targeted HiPo exposure: <b><span id="coverageLabel">70</span>%</b></label>
+        <input type="range" id="coverage" min="20" max="100" step="5" value="70" />
+      </div>
+
+      <div class="section">
+        <label for="governance">Governance strictness</label>
+        <select id="governance">
+          <option value="0.92">Strict — cohort signals + human review + bias audit</option>
+          <option value="1.00">Balanced — human review + explainability</option>
+          <option value="1.07">Light — faster action, higher governance risk</option>
+        </select>
+      </div>
+
+      <div class="btns">
+        <button class="secondary" id="reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Estimated leadership outcome</h2>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="label">Avoided replacement exposure</div>
+          <div class="value good" id="saved">$0.88M</div>
+          <div class="tiny">from HiPo exposure base of $12.63M</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Remaining HiPo exposure</div>
+          <div class="value" id="remaining">$11.75M</div>
+          <div class="tiny">scenario estimate</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Pilot effectiveness index</div>
+          <div class="value" id="effectiveness">70</div>
+          <div class="tiny">0–100 relative decision score</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Governance risk</div>
+          <div class="value" id="risk">Low</div>
+          <div class="tiny">based on selected control level</div>
+        </div>
+      </div>
+
+      <div class="barbox">
+        <div class="barlabel"><span>Retention impact</span><span id="retentionPct">70%</span></div>
+        <div class="bar"><div class="fill" id="retentionBar"></div></div>
+      </div>
+      <div class="barbox">
+        <div class="barlabel"><span>Implementation practicality</span><span id="practicalPct">82%</span></div>
+        <div class="bar"><div class="fill" id="practicalBar"></div></div>
+      </div>
+      <div class="barbox">
+        <div class="barlabel"><span>Governance confidence</span><span id="govPct">94%</span></div>
+        <div class="bar"><div class="fill" id="govBar"></div></div>
+      </div>
+
+      <div class="recommend" id="recommendation"></div>
+      <div class="assumption">
+        Model logic: estimated avoided exposure = $12.63M × selected reduction × pilot coverage × cohort factor × intervention factor × governance adjustment.
+        The financial output is deliberately conservative and should be interpreted as a scenario, not forecast certainty.
+      </div>
+    </div>
+
+    <div class="card wide">
+      <h2>3. Hiring economics: Cost per Retained Quality Hire</h2>
+      <div class="sub" style="margin-bottom:12px">
+        Enter recruitment spend to compare channels on the outcome that matters: hires still employed and performing after 12 months.
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th><th>Hires</th><th>12-mo retained</th><th>Quality rate</th><th>Recruitment spend</th><th>Cost / retained quality hire</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Agency</td><td>274</td>
+            <td><input id="agencyRet" type="number" value="85" min="1" max="100" style="width:75px">%</td>
+            <td><input id="agencyQual" type="number" value="75" min="1" max="100" style="width:75px">%</td>
+            <td>$<input id="agencySpend" type="number" value="1200000" min="0" style="width:120px"></td>
+            <td id="agencyCPRQH"></td>
+          </tr>
+          <tr>
+            <td>Direct</td><td>93</td>
+            <td><input id="directRet" type="number" value="88" min="1" max="100" style="width:75px">%</td>
+            <td><input id="directQual" type="number" value="78" min="1" max="100" style="width:75px">%</td>
+            <td>$<input id="directSpend" type="number" value="240000" min="0" style="width:120px"></td>
+            <td id="directCPRQH"></td>
+          </tr>
+          <tr>
+            <td>Referral</td><td>88</td>
+            <td><input id="refRet" type="number" value="91" min="1" max="100" style="width:75px">%</td>
+            <td><input id="refQual" type="number" value="80" min="1" max="100" style="width:75px">%</td>
+            <td>$<input id="refSpend" type="number" value="110000" min="0" style="width:120px"></td>
+            <td id="refCPRQH"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="assumption">
+        Recruitment-spend, 12-month retention and quality-rate fields are editable assumptions because the case evidence provided hiring volumes and downstream talent indicators, but not complete channel cost data.
+        Use NovaCorp's actual values when available.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE_EXPOSURE = 12.63; // $M
+
+function moneyM(x){ return "$" + x.toFixed(2) + "M"; }
+function money(x){ return "$" + Math.round(x).toLocaleString(); }
+
+function updateRetention(){
+  const cohort = +document.getElementById("cohort").value;
+  const intervention = +document.getElementById("intervention").value;
+  const reduction = +document.getElementById("reduction").value / 100;
+  const coverage = +document.getElementById("coverage").value / 100;
+  const governance = +document.getElementById("governance").value;
+
+  document.getElementById("reductionLabel").textContent = Math.round(reduction*100);
+  document.getElementById("coverageLabel").textContent = Math.round(coverage*100);
+
+  const saved = BASE_EXPOSURE * reduction * coverage * cohort * intervention * governance;
+  const remaining = BASE_EXPOSURE - saved;
+
+  const retention = Math.min(100, Math.round((reduction/0.30)*65 + coverage*20 + intervention*10));
+  const practicality = Math.min(100, Math.round(88 - (coverage*12) + (intervention < .7 ? 5 : 0)));
+  const govConf = governance < .95 ? 96 : (governance > 1.03 ? 62 : 82);
+  const eff = Math.round(retention*.45 + practicality*.25 + govConf*.30);
+
+  document.getElementById("saved").textContent = moneyM(saved);
+  document.getElementById("remaining").textContent = moneyM(remaining);
+  document.getElementById("effectiveness").textContent = eff;
+  document.getElementById("risk").textContent = govConf >= 90 ? "Low" : (govConf >= 75 ? "Moderate" : "High");
+
+  document.getElementById("retentionPct").textContent = retention+"%";
+  document.getElementById("practicalPct").textContent = practicality+"%";
+  document.getElementById("govPct").textContent = govConf+"%";
+  document.getElementById("retentionBar").style.width = retention+"%";
+  document.getElementById("practicalBar").style.width = practicality+"%";
+  document.getElementById("govBar").style.width = govConf+"%";
+
+  let rec;
+  if (govConf < 75){
+    rec = "<b>Recommendation:</b> Do not scale yet. The scenario produces faster action, but governance confidence is too low for a people decision system. Add human review, explainability and bias checks first.";
+  } else if (saved >= 1.2 && eff >= 75){
+    rec = "<b>Recommendation:</b> Strong pilot case. Run the 90-day setup in the highest-value HiPo hotspot, then evaluate over 6–12 months. Scale only if retention, employee experience and economics improve together.";
+  } else if (saved >= .6){
+    rec = "<b>Recommendation:</b> Viable controlled pilot. Keep the intervention targeted and use the test to learn which actions move retention before expanding.";
+  } else {
+    rec = "<b>Recommendation:</b> Expected value is currently modest. Narrow the pilot to a higher-risk cohort or test a stronger retention intervention before committing broader resources.";
+  }
+  document.getElementById("recommendation").innerHTML = rec;
+}
+
+function updateHiring(){
+  const rows = [
+    ["agency",274],["direct",93],["ref",88]
+  ];
+  rows.forEach(([id, hires])=>{
+    const ret = +document.getElementById(id+"Ret").value/100;
+    const qual = +document.getElementById(id+"Qual").value/100;
+    const spend = +document.getElementById(id+"Spend").value;
+    const retainedQuality = hires*ret*qual;
+    const c = retainedQuality > 0 ? spend/retainedQuality : 0;
+    document.getElementById(id+"CPRQH").textContent = money(c);
+  });
+}
+
+document.querySelectorAll("select,input").forEach(el=>{
+  el.addEventListener("input", ()=>{updateRetention(); updateHiring();});
+});
+
+document.getElementById("reset").addEventListener("click", ()=>{
+  document.getElementById("cohort").value="1.00";
+  document.getElementById("intervention").value="1.00";
+  document.getElementById("reduction").value="10";
+  document.getElementById("coverage").value="70";
+  document.getElementById("governance").value="0.92";
+  updateRetention(); updateHiring();
+});
+
+updateRetention();
+updateHiring();
+</script>
+</body>
+</html>
